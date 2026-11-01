@@ -44,7 +44,9 @@ struct BrowseView: View {
 
     var body: some View {
         @Bindable var browser = browser
-        NavigationStack {
+        // No NavigationStack here: on iOS 26+ its full-screen swipe-back gesture
+        // collides with the web view's own gestures and crashes UIKit.
+        Group {
             VStack(spacing: 0) {
                 addressBar
                 if browser.isLoading && !browser.showingStartPage {
@@ -70,7 +72,6 @@ struct BrowseView: View {
                 Divider()
                 bottomBar
             }
-            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showList) {
                 BookmarksHistorySheet()
                     .environment(browser)

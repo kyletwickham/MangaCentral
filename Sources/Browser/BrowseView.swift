@@ -1,27 +1,74 @@
 import SwiftUI
 import WebKit
 
+/// iOS 27 crashes inside UIKit when a gesture recognizer that "delays touches"
+/// sits between the finger and the web page (crash: _delayTouchesForEvent
+/// inserting nil). This container turns delaying off for every recognizer on the
+/// path: SwiftUI's on the ancestors, and WebKit's inside the web view.
+final class WebContainerView: UIView {
+    private var lastRelax = Date.distantPast
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        relaxGestures(force: true)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        relaxGestures()
+    }
+
+    /// Catches recognizers WebKit adds lazily, right before each touch is handled.
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        relaxGestures()
+        return super.hitTest(point, with: event)
+    }
+
+    func relaxGestures(force: Bool = false) {
+        if !force && Date().timeIntervalSince(lastRelax) < 0.25 { return }
+        lastRelax = Date()
+        var ancestor: UIView? = self
+        while let v = ancestor {
+            Self.relax(v.gestureRecognizers)
+            ancestor = v.superview
+        }
+        func walk(_ v: UIView) {
+            Self.relax(v.gestureRecognizers)
+            v.subviews.forEach(walk)
+        }
+        subviews.forEach(walk)
+    }
+
+    private static func relax(_ recognizers: [UIGestureRecognizer]?) {
+        recognizers?.forEach { gr in
+            if gr.delaysTouchesBegan { gr.delaysTouchesBegan = false }
+            if gr.delaysTouchesEnded { gr.delaysTouchesEnded = false }
+        }
+    }
+}
+
 /// Hosts the app's single web view inside a plain container view, so SwiftUI
 /// never manages the web view (and its scroll view) directly.
 struct WebView: UIViewRepresentable {
     let webView: WKWebView
 
-    func makeUIView(context: Context) -> UIView {
-        let container = UIView()
+    func makeUIView(context: Context) -> WebContainerView {
+        let container = WebContainerView()
         container.backgroundColor = .systemBackground
         attach(to: container)
         return container
     }
 
-    func updateUIView(_ container: UIView, context: Context) {
+    func updateUIView(_ container: WebContainerView, context: Context) {
         if webView.superview !== container { attach(to: container) }
+        container.relaxGestures()
     }
 
-    static func dismantleUIView(_ container: UIView, coordinator: ()) {
+    static func dismantleUIView(_ container: WebContainerView, coordinator: ()) {
         container.subviews.forEach { $0.removeFromSuperview() }
     }
 
-    private func attach(to container: UIView) {
+    private func attach(to container: WebContainerView) {
         webView.removeFromSuperview()
         webView.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(webView)

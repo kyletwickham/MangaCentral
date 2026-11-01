@@ -1,0 +1,72 @@
+name: Simulator smoke test
+
+# Builds the app for the iPhone simulator, opens every tab, takes screenshots,
+# and saves any crash reports to the "ci-results" branch so they can be read.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  smoke:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Make the Xcode project
+        run: xcodegen generate
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project MangaCentral.xcodeproj -scheme MangaCentral -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath simbuild CODE_SIGNING_ALLOWED=NO build | tail -25
+
+      - name: Open each tab
+        run: |
+          mkdir -p results
+          DEVICE=$(xcrun simctl list devices available | grep -E "^ +iPhone" | head -1 | grep -oE "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}")
+          echo "Simulator: $(xcrun simctl list devices available | grep "$DEVICE")" > results/summary.txt
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b
+          xcrun simctl install "$DEVICE" simbuild/Build/Products/Debug-iphonesimulator/MangaCentral.app
+          REPORTS=~/Library/Logs/DiagnosticReports
+          for TAB in library browse browse-sites browse-load downloads cloud friends; do
+            rm -f $REPORTS/MangaCentral* 2>/dev/null
+            xcrun simctl launch --terminate-running-process "$DEVICE" com.kylewickham.mangacentral -startTab "$TAB" > "results/launch-$TAB.txt" 2>&1 || true
+            sleep 15
+            xcrun simctl io "$DEVICE" screenshot "results/$TAB.png" >/dev/null 2>&1 || true
+            if ls $REPORTS/MangaCentral* >/dev/null 2>&1; then
+              echo "$TAB: CRASHED" >> results/summary.txt
+              for f in $REPORTS/MangaCentral*; do cp "$f" "results/crash-$TAB-$(basename "$f")"; done
+            else
+              echo "$TAB: ok" >> results/summary.txt
+            fi
+          done
+          xcrun simctl spawn "$DEVICE" log show --last 15m --style compact \
+            --predicate 'process == "MangaCentral" AND (messageType == error OR messageType == fault)' \
+            > results/app-errors.txt 2>&1 || true
+          cat results/summary.txt
+
+      - name: Publish results
+        if: always()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          mkdir -p /tmp/results && cp -R results/. /tmp/results/ 2>/dev/null || true
+          git checkout --orphan ci-results
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          mkdir -p results && cp -R /tmp/results/. results/
+          echo "$GITHUB_SHA" > results/commit.txt
+          git add results
+          git commit -q -m "Smoke test results for ${GITHUB_SHA::7}"
+          git push -f origin ci-results

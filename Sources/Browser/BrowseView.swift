@@ -10,6 +10,7 @@ struct WebView: UIViewRepresentable {
 struct BrowseView: View {
     @Environment(BrowserModel.self) private var browser
     @Environment(SitesStore.self) private var sites
+    @Environment(AppState.self) private var app
     @FocusState private var addressFocused: Bool
     @State private var showList = false
     @State private var showSites = false
@@ -51,6 +52,14 @@ struct BrowseView: View {
                 SitesView()
                     .environment(sites)
                     .environment(browser)
+            }
+            .onAppear {
+                switch app.testAction {
+                case "browse-sites": showSites = true
+                case "browse-load": browser.go("example.com")
+                default: break
+                }
+                app.testAction = nil
             }
             .onChange(of: addressFocused) { _, focused in
                 browser.isEditingAddress = focused

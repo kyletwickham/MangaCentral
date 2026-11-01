@@ -74,6 +74,23 @@ final class AppState {
     var pendingDownload: UUID?
 
     @ObservationIgnored weak var library: LibraryStore?
+    /// Test hook: "-startTab browse-sites" etc. Used only by the automated simulator test.
+    @ObservationIgnored var testAction: String?
+
+    init() {
+        let args = ProcessInfo.processInfo.arguments
+        if let i = args.firstIndex(of: "-startTab"), i + 1 < args.count {
+            let value = args[i + 1]
+            switch value {
+            case "browse", "browse-sites", "browse-load": tab = .browse
+            case "downloads": tab = .downloads
+            case "cloud": tab = .cloud
+            case "friends": tab = .friends
+            default: tab = .library
+            }
+            testAction = value
+        }
+    }
 
     func read(_ bookID: UUID) {
         if library?.books.first(where: { $0.id == bookID })?.isOffloaded == true {

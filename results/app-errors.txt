@@ -1,0 +1,50 @@
+getpwuid_r did not find a match for uid 501
+Timestamp               Ty Process[PID:TID]
+2026-11-01 05:03:04.899 E  MangaCentral[5730:57f5] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-01 05:03:05.018 F  MangaCentral[5730:57cc] [com.apple.WebKit:Process] GPU process (0x10c1081e0) took 1.769014 seconds to launch
+2026-11-01 05:03:05.022 F  MangaCentral[5730:57cc] [com.apple.WebKit:Process] WebContent process (0x10c0c00c0) took 2.062224 seconds to launch
+2026-11-01 05:03:05.041 E  MangaCentral[5730:57f7] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: B334EDCA-7DEE-4DF6-99A8-7F3F9C0D7CD6])
+2026-11-01 05:03:05.131 E  MangaCentral[5730:57f3] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-01 05:03:06.115 E  MangaCentral[5730:5832] [com.apple.WebKit:ProcessSuspension] WebContent[5735] 0x10d060150 - [sessionID=1] WebProcess::updateFreezerStatus: isFreezable=1, error=-1
+2026-11-01 05:03:06.486 E  MangaCentral[5730:57cc] [com.apple.WebKit:ResourceLoadStatistics] Failed to request storage access quirks from WebPrivacy.
+2026-11-01 05:03:06.486 E  MangaCentral[5730:57cc] [com.apple.WebKit:ResourceLoadStatistics] Failed to request known fingerprinting scripts from WebPrivacy: Error Domain=WebPrivacyErrorDomain Code=1001 "List data not found" UserInfo={NSLocalizedDescription=List data not found}
+2026-11-01 05:03:06.486 E  MangaCentral[5730:57cc] [com.apple.WebKit:ResourceLoadStatistics] Failed to request storage access user agent string quirks from WebPrivacy.
+2026-11-01 05:03:09.955 E  MangaCentral[5730:57cc] [com.apple.WebKit:Process] 0x10c1081e0 - GPUProcessProxy::gpuProcessExited: reason=IdleExit
+2026-11-01 05:03:09.956 E  MangaCentral[5730:57cc] [com.apple.WebKit:Process] 0x10c0c00c0 - [PID=5735] WebProcessProxy::gpuProcessExited: reason=IdleExit
+2026-11-01 05:03:09.964 E  MangaCentral[5730:57f7] [com.apple.runningboard:assertion] Error acquiring assertion: <Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 5737 does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 5737 does not exist}>
+2026-11-01 05:03:09.965 E  MangaCentral[5730:57f7] [com.apple.WebKit:ProcessSuspension] 0x10c12c0c0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=5737, error: (null)
+2026-11-01 05:04:10.526 E  MangaCentral[8274:717b] [com.apple.UIKit:Warning] Trying to set delaysTouchesBegan to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:04:10.526 E  MangaCentral[8274:717b] [com.apple.UIKit:Warning] Trying to set delaysTouchesEnded to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:04:10.815 F  MangaCentral[8274:717b] [com.apple.WebKit:Process] WebContent process (0x10c0bc0c0) took 2.774254 seconds to launch
+2026-11-01 05:04:10.928 F  MangaCentral[8274:717b] [com.apple.WebKit:Process] GPU process (0x10c1101e0) took 2.740926 seconds to launch
+2026-11-01 05:04:10.950 E  MangaCentral[8274:71af] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: AD311034-2A28-4149-A4C2-C05C463C7E0D])
+2026-11-01 05:04:12.221 F  MangaCentral[8274:717b] [com.apple.WebKit:Process] Networking process (0x10c137040) took 1.397356 seconds to launch
+2026-11-01 05:04:31.892 E  MangaCentral[8965:7880] [com.apple.UIKit:Warning] Trying to set delaysTouchesBegan to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:04:31.892 E  MangaCentral[8965:7880] [com.apple.UIKit:Warning] Trying to set delaysTouchesEnded to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:04:34.717 F  MangaCentral[8965:7880] [com.apple.WebKit:Process] GPU process (0x10c1141e0) took 4.077247 seconds to launch
+2026-11-01 05:04:34.724 F  MangaCentral[8965:7880] [com.apple.WebKit:Process] WebContent process (0x10c0b00c0) took 4.173760 seconds to launch
+2026-11-01 05:04:34.815 E  MangaCentral[8965:78dc] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: D41F2936-057C-4222-887B-78388FDE2431])
+2026-11-01 05:04:35.936 F  MangaCentral[8965:7880] [com.apple.WebKit:Process] Networking process (0x10c0cc100) took 1.209743 seconds to launch
+2026-11-01 05:05:23.154 E  MangaCentral[9793:9507] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: F385B87B-E0ED-4CFB-865D-4A6D37B15FF8])
+2026-11-01 05:05:23.320 E  MangaCentral[9793:94fb] [com.apple.UIKit:Warning] Trying to set delaysTouchesBegan to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:05:23.321 E  MangaCentral[9793:94fb] [com.apple.UIKit:Warning] Trying to set delaysTouchesEnded to NO on a system gate gesture recognizer - this is unsupported and will have undesired side effects
+2026-11-01 05:05:23.367 E  MangaCentral[9793:9508] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-01 05:05:23.477 F  MangaCentral[9793:94fb] [com.apple.WebKit:Process] WebContent process (0x1100c80c0) took 1.117398 seconds to launch
+2026-11-01 05:05:23.548 E  MangaCentral[9793:9506] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-01 05:05:23.769 F  MangaCentral[9793:94fb] [com.apple.WebKit:Process] GPU process (0x1101141e0) took 1.371841 seconds to launch
+2026-11-01 05:05:24.233 E  MangaCentral[9793:94fb] [com.apple.WebKit:ResourceLoadStatistics] Failed to request query parameters from WebPrivacy.
+2026-11-01 05:05:25.057 E  MangaCentral[9793:955e] [com.apple.WebKit:ResourceLoadStatistics] WebContent[11765] Unable to filter tracking query parameters (missing data)
+2026-11-01 05:05:28.367 E  MangaCentral[9793:955e] [com.apple.WebKit:ResourceLoadStatistics] WebContent[11765] Unable to hide query parameters from script (missing data)
+2026-11-01 05:05:28.386 E  MangaCentral[9793:94fb] [com.apple.WebKit:ResourceLoadStatistics] Failed to request allowed query parameters from WebPrivacy.
+2026-11-01 05:05:28.725 E  MangaCentral[9793:94fb] [com.apple.WebKit:ResourceLoadStatistics] Failed to request restricted opener domains from WebPrivacy
+2026-11-01 05:05:43.142 F  MangaCentral[12517:9ce3] [com.apple.WebKit:Process] WebContent process (0x10b0c80c0) took 1.343685 seconds to launch
+2026-11-01 05:05:43.146 E  MangaCentral[12517:9cf5] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 4367C4CC-3AA6-4794-8D23-EF278530FA4B])
+2026-11-01 05:05:43.797 E  MangaCentral[12517:9d3b] [com.apple.WebKit:ProcessSuspension] WebContent[12524] 0x10c060150 - [sessionID=1] WebProcess::updateFreezerStatus: isFreezable=1, error=-1
+2026-11-01 05:06:00.564 F  MangaCentral[13294:a50b] [com.apple.WebKit:Process] WebContent process (0x10c0c80c0) took 1.411219 seconds to launch
+2026-11-01 05:06:00.609 E  MangaCentral[13294:a519] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 3456078A-DD39-4DC5-B6D1-08E8F6F4BDF3])
+2026-11-01 05:06:00.735 F  MangaCentral[13294:a50b] [com.apple.WebKit:Process] GPU process (0x10c1181e0) took 1.518815 seconds to launch
+2026-11-01 05:06:01.463 E  MangaCentral[13294:a5a2] [com.apple.WebKit:ProcessSuspension] WebContent[13308] 0x110060150 - [sessionID=1] WebProcess::updateFreezerStatus: isFreezable=1, error=-1
+2026-11-01 05:06:09.068 E  MangaCentral[13294:a50b] [com.apple.WebKit:Process] 0x10c1181e0 - GPUProcessProxy::gpuProcessExited: reason=IdleExit
+2026-11-01 05:06:09.069 E  MangaCentral[13294:a50b] [com.apple.WebKit:Process] 0x10c0c80c0 - [PID=13308] WebProcessProxy::gpuProcessExited: reason=IdleExit
+2026-11-01 05:06:17.896 E  MangaCentral[14168:addf] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 81269174-1E05-42E7-8D82-83A32291C8A2])
+2026-11-01 05:06:18.723 E  MangaCentral[14168:ae2d] [com.apple.WebKit:ProcessSuspension] WebContent[14176] 0x10f060150 - [sessionID=1] WebProcess::updateFreezerStatus: isFreezable=1, error=-1

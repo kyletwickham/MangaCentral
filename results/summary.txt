@@ -1,0 +1,9 @@
+Simulator:     iPhone 17 Pro (B7CD7ED2-0DFF-42FE-A30F-21CD2E3D3D2C) (Shutdown) 
+Xcode: Xcode 26.3 / runtimes: iOS 18.5 iOS 18.6 iOS 26.0 iOS 26.1 iOS 26.2 
+library: ok
+browse: ok
+browse-sites: ok
+browse-load: ok
+downloads: ok
+cloud: ok
+friends: ok

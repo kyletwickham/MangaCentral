@@ -1,0 +1,58 @@
+name: Build MangaCentral IPA
+
+# Runs on GitHub's free Mac machines. Start it from the Actions tab
+# ("Run workflow"), or it runs by itself whenever you upload new files.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Make the Xcode project
+        run: xcodegen generate
+
+      - name: Build the app (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project MangaCentral.xcodeproj \
+            -scheme MangaCentral \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build | tee build.log | grep -E "error:|warning: .*(deprecated)?|BUILD (SUCCEEDED|FAILED)" || true
+          test -d build/Build/Products/Release-iphoneos/MangaCentral.app
+
+      - name: Package as .ipa
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/MangaCentral.app Payload/
+          zip -qry MangaCentral.ipa Payload
+          ls -lh MangaCentral.ipa
+
+      - name: Upload the .ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: MangaCentral-ipa
+          path: MangaCentral.ipa
+
+      # If the build fails, the full log is saved so the errors can be fixed.
+      - name: Save build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore

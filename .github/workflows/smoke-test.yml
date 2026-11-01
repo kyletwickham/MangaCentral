@@ -41,6 +41,7 @@ jobs:
           mkdir -p results
           DEVICE=$(xcrun simctl list devices available | grep -E "^ +iPhone" | head -1 | grep -oE "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}")
           echo "Simulator: $(xcrun simctl list devices available | grep "$DEVICE")" > results/summary.txt
+          echo "Xcode: $(xcodebuild -version | head -1) / runtimes: $(xcrun simctl list runtimes | grep -o 'iOS [0-9.]*' | tr '\n' ' ')" >> results/summary.txt
           xcrun simctl boot "$DEVICE" || true
           xcrun simctl bootstatus "$DEVICE" -b
           xcrun simctl install "$DEVICE" simbuild/Build/Products/Debug-iphonesimulator/MangaCentral.app

@@ -101,6 +101,22 @@ final class AppState {
     }
 }
 
+/// iOS 26+ shrinks the tab bar while content scrolls by watching the scroll
+/// view's gestures. That extra layer is part of the web-page crash, so turn it off.
+struct KeepTabBarExpanded: ViewModifier {
+    func body(content: Content) -> some View {
+        #if compiler(>=6.2)
+        if #available(iOS 26.0, *) {
+            content.tabBarMinimizeBehavior(.never)
+        } else {
+            content
+        }
+        #else
+        content
+        #endif
+    }
+}
+
 struct RootView: View {
     @Environment(LibraryStore.self) private var library
     @Environment(AppState.self) private var app
@@ -132,6 +148,7 @@ struct RootView: View {
                 .tabItem { Label("Friends", systemImage: "person.2") }
                 .tag(AppTab.friends)
         }
+        .modifier(KeepTabBarExpanded())
         .fullScreenCover(item: $app.reader) { request in
             ReaderView(bookID: request.id)
                 .environment(library)

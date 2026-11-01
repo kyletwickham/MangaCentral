@@ -33,7 +33,10 @@ final class BrowserModel {
         config.allowsInlineMediaPlayback = true
         config.websiteDataStore = .default() // keeps cookies, so site logins persist
         webView = WKWebView(frame: .zero, configuration: config)
-        webView.allowsBackForwardNavigationGestures = true
+        // iOS 27 crashes inside UIKit's gesture system when extra touch-delaying
+        // gestures are stacked on the web view, so keep it to WebKit's own basics.
+        webView.allowsBackForwardNavigationGestures = false
+        webView.scrollView.delaysContentTouches = false
         coordinator.model = self
         webView.navigationDelegate = coordinator
         webView.uiDelegate = coordinator

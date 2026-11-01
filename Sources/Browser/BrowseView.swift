@@ -1,10 +1,37 @@
 import SwiftUI
 import WebKit
 
+/// Hosts the app's single web view inside a plain container view, so SwiftUI
+/// never manages the web view (and its scroll view) directly.
 struct WebView: UIViewRepresentable {
     let webView: WKWebView
-    func makeUIView(context: Context) -> WKWebView { webView }
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
+
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView()
+        container.backgroundColor = .systemBackground
+        attach(to: container)
+        return container
+    }
+
+    func updateUIView(_ container: UIView, context: Context) {
+        if webView.superview !== container { attach(to: container) }
+    }
+
+    static func dismantleUIView(_ container: UIView, coordinator: ()) {
+        container.subviews.forEach { $0.removeFromSuperview() }
+    }
+
+    private func attach(to container: UIView) {
+        webView.removeFromSuperview()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(webView)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: container.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+    }
 }
 
 struct BrowseView: View {

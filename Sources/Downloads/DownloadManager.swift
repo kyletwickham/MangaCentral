@@ -286,17 +286,26 @@ final class DownloadDelegateProxy: NSObject, WKDownloadDelegate {
                   decideDestinationUsing response: URLResponse,
                   suggestedFilename: String,
                   completionHandler: @escaping (URL?) -> Void) {
-        let url = MainActor.assumeIsolated {
-            manager?.destination(for: download, response: response, suggestedFilename: suggestedFilename)
+        if Thread.isMainThread {
+            let url = MainActor.assumeIsolated {
+                manager?.destination(for: download, response: response, suggestedFilename: suggestedFilename)
+            }
+            completionHandler(url)
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                let url = MainActor.assumeIsolated {
+                    self?.manager?.destination(for: download, response: response, suggestedFilename: suggestedFilename)
+                }
+                completionHandler(url)
+            }
         }
-        completionHandler(url)
     }
 
     func downloadDidFinish(_ download: WKDownload) {
-        MainActor.assumeIsolated { manager?.didFinish(download) }
+        onMain { [weak self] in self?.manager?.didFinish(download) }
     }
 
     func download(_ download: WKDownload, didFailWithError error: Error, resumeData: Data?) {
-        MainActor.assumeIsolated { manager?.didFail(download, error: error) }
+        onMain { [weak self] in self?.manager?.didFail(download, error: error) }
     }
 }

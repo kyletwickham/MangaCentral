@@ -212,6 +212,16 @@ enum DownloadRules {
     }
 }
 
+/// Runs work on the main thread without ever trapping: immediately if we're
+/// already there, otherwise on the next main-queue turn.
+func onMain(_ work: @escaping @MainActor () -> Void) {
+    if Thread.isMainThread {
+        MainActor.assumeIsolated(work)
+    } else {
+        DispatchQueue.main.async { MainActor.assumeIsolated(work) }
+    }
+}
+
 /// WebKit's delegate callbacks, forwarded to the model.
 final class BrowserCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
     weak var model: BrowserModel?
@@ -227,7 +237,7 @@ final class BrowserCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
            let scheme = url.scheme?.lowercased(),
            !["http", "https", "about", "blob", "data", "file"].contains(scheme) {
             // mailto:, tel:, app links: hand off to iOS.
-            MainActor.assumeIsolated { UIApplication.shared.open(url) }
+            onMain { UIApplication.shared.open(url) }
             decisionHandler(.cancel)
             return
         }
@@ -242,23 +252,23 @@ final class BrowserCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
                                                     isMainFrame: navigationResponse.isForMainFrame)
         if !download && navigationResponse.isForMainFrame {
             let mime = navigationResponse.response.mimeType
-            MainActor.assumeIsolated { model?.currentMIMEType = mime }
+            onMain { [weak self] in self?.model?.currentMIMEType = mime }
         }
         decisionHandler(download ? .download : .allow)
     }
 
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) {
         let url = navigationAction.request.url
-        MainActor.assumeIsolated { model?.downloads?.begin(download, sourceURL: url) }
+        onMain { [weak self] in self?.model?.downloads?.begin(download, sourceURL: url) }
     }
 
     func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) {
         let url = navigationResponse.response.url
-        MainActor.assumeIsolated { model?.downloads?.begin(download, sourceURL: url) }
+        onMain { [weak self] in self?.model?.downloads?.begin(download, sourceURL: url) }
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        MainActor.assumeIsolated { model?.didFinishLoad() }
+        onMain { [weak self] in self?.model?.didFinishLoad() }
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
@@ -275,7 +285,7 @@ final class BrowserCoordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         if ns.domain == NSURLErrorDomain && ns.code == NSURLErrorCancelled { return }
         if ns.domain == "WebKitErrorDomain" && ns.code == 102 { return }
         let message = ns.localizedDescription
-        MainActor.assumeIsolated { model?.loadError = message }
+        onMain { [weak self] in self?.model?.loadError = message }
     }
 
     /// Links that open a new window (target="_blank") load in the same view.

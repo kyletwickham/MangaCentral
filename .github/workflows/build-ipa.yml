@@ -15,6 +15,12 @@ jobs:
       - name: Get the code
         uses: actions/checkout@v4
 
+      - name: Use the newest Xcode on the machine
+        run: |
+          NEWEST=$(ls -d /Applications/Xcode_*.app 2>/dev/null | grep -v -i beta | sort -V | tail -1)
+          if [ -n "$NEWEST" ]; then sudo xcode-select -s "$NEWEST"; fi
+          xcodebuild -version
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
